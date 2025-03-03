@@ -12,6 +12,7 @@ from typing import Optional, List, Union
 from enum import Enum
 
 from fastapi.responses import StreamingResponse
+from matplotlib.ticker import ScalarFormatter
 
 
 # Define Enums for validation
@@ -67,7 +68,6 @@ def call_api(timestamp, lat, lon, products=["NEQUICK.ALG", "TADM.ALG"], measurem
         "accept": "application/json"
     }
     response = requests.get(url, headers=headers)
-    response.raise_for_status()
     data = response.json()
     ssn = data["grid_params"]["SolCycle"]["ssn"]
     f10_7 = data["grid_params"]["SolCycle"]["f10_7"]
@@ -135,15 +135,19 @@ async def run_workflow(
         if "edensity" in measurements:
             # edensity vs theight, compare NEQUICK.ALG and TADM.ALG
             if "NEQUICK.ALG" in plot_data:
-                ax1.plot(plot_data["NEQUICK.ALG"]["edensity"], plot_data["NEQUICK.ALG"]["theight"], label="NEQUICK.ALG", linestyle='-', marker='o')
+                ax1.plot([x / 1e6 for x in plot_data["NEQUICK.ALG"]["edensity"]], plot_data["NEQUICK.ALG"]["theight"], label="NEQUICK.ALG", linestyle='-', marker='o')
             if "TADM.ALG" in plot_data:
-                ax1.plot(plot_data["TADM.ALG"]["edensity"], plot_data["TADM.ALG"]["theight"], label="TADM.ALG", linestyle='-', marker='o')
+                ax1.plot([x / 1e6 for x in plot_data["TADM.ALG"]["edensity"]], plot_data["TADM.ALG"]["theight"], label="TADM.ALG", linestyle='-', marker='o')
 
-            ax1.set_xlabel("Electron Density")
+            # Set axis starting from 0 for both x and y
+            ax1.set_xlim(left=0)
+            ax1.set_ylim(bottom=0)
+            ax1.set_xlabel("Electron Density (el/cm^3)")
             ax1.set_ylabel("Height (km)")
             ax1.set_title(f'Electron Density vs Height - {", ".join(products)}')
             ax1.legend()
             ax1.grid()
+            ax1.ticklabel_format(style='plain', axis='x')
 
         if "frequency" in measurements:
             # frequency vs theight, compare NEQUICK.ALG and TADM.ALG
@@ -153,7 +157,10 @@ async def run_workflow(
             if "TADM.ALG" in plot_data:
                 ax2.plot(plot_data["TADM.ALG"]["frequency"], plot_data["TADM.ALG"]["theight"], label="TADM.ALG", linestyle='-', marker='o')
 
-            ax2.set_xlabel("Frequency")
+            # Set axis starting from 0 for both x and y
+            ax2.set_xlim(left=0)
+            ax2.set_ylim(bottom=0)
+            ax2.set_xlabel("Frequency (MHz)")
             ax2.set_ylabel("Height (km)")
             ax2.set_title(f'Frequency vs Height - {", ".join(products)}')
             ax2.legend()
@@ -171,15 +178,18 @@ async def run_workflow(
         if "edensity" in measurements:
             # edensity vs theight, compare NEQUICK.ALG and TADM.ALG
             if "NEQUICK.ALG" in plot_data:
-                ax.plot(plot_data["NEQUICK.ALG"]["edensity"], plot_data["NEQUICK.ALG"]["theight"], label="NEQUICK.ALG", linestyle='-', marker='o')
+                ax.plot([x / 1e6 for x in plot_data["NEQUICK.ALG"]["edensity"]], plot_data["NEQUICK.ALG"]["theight"], label="NEQUICK.ALG", linestyle='-', marker='o')
             if "TADM.ALG" in plot_data:
-                ax.plot(plot_data["TADM.ALG"]["edensity"], plot_data["TADM.ALG"]["theight"], label="TADM.ALG", linestyle='-', marker='o')
+                ax.plot([x / 1e6 for x in plot_data["TADM.ALG"]["edensity"]], plot_data["TADM.ALG"]["theight"], label="TADM.ALG", linestyle='-', marker='o')
 
-            ax.set_xlabel("Electron Density")
+            ax.set_xlim(left=0)
+            ax.set_ylim(bottom=0)
+            ax.set_xlabel("Electron Density (el/cm^3)")
             ax.set_ylabel("Height (km)")
             ax.set_title(f'Electron Density vs Height - {", ".join(products)}')
             ax.legend()
             ax.grid()
+            ax.ticklabel_format(style='plain', axis='x')
 
         if "frequency" in measurements:
             # frequency vs theight, compare NEQUICK.ALG and TADM.ALG
@@ -189,7 +199,9 @@ async def run_workflow(
             if "TADM.ALG" in plot_data:
                 ax.plot(plot_data["TADM.ALG"]["frequency"], plot_data["TADM.ALG"]["theight"], label="TADM.ALG", linestyle='-', marker='o')
 
-            ax.set_xlabel("Frequency")
+            ax.set_xlim(left=0)
+            ax.set_ylim(bottom=0)
+            ax.set_xlabel("Frequency (MHz)")
             ax.set_ylabel("Height (km)")
             ax.set_title(f'Frequency vs Height - {", ".join(products)}')
             ax.legend()
