@@ -177,7 +177,7 @@ async def run_workflow(
                 if "TADM.ALG" in plot_data:
                     ax1.plot([x / 1e6 for x in plot_data["TADM.ALG"]["edensity"]], plot_data["TADM.ALG"]["theight"], label="TADM.ALG", linestyle='-', marker='o')
                 if "NEDM2020.ALG" in plot_data:
-                    ax1.plot([x for x in plot_data["NEDM2020.ALG"]["edensity"]], plot_data["NEDM2020.ALG"]["theight"], label="NEDM2020.ALG", linestyle='-', marker='o')
+                    ax1.plot([x / 1e6 for x in plot_data["NEDM2020.ALG"]["edensity"]], plot_data["NEDM2020.ALG"]["theight"], label="NEDM2020.ALG", linestyle='-', marker='o')
 
                 # Set axis starting from 0 for both x and y
                 ax1.set_xlim(left=0)
@@ -226,7 +226,7 @@ async def run_workflow(
                 if "TADM.ALG" in plot_data:
                     ax.plot([x / 1e6 for x in plot_data["TADM.ALG"]["edensity"]], plot_data["TADM.ALG"]["theight"], label="TADM.ALG", linestyle='-', marker='o')
                 if "NEDM2020.ALG" in plot_data:
-                    ax.plot([x for x in plot_data["NEDM2020.ALG"]["edensity"]], plot_data["NEDM2020.ALG"]["theight"], label="NEDM2020.ALG", linestyle='-', marker='o')
+                    ax.plot([x / 1e6 for x  in plot_data["NEDM2020.ALG"]["edensity"]], plot_data["NEDM2020.ALG"]["theight"], label="NEDM2020.ALG", linestyle='-', marker='o')
                 ax.set_xlim(left=0)
                 ax.set_ylim(bottom=0)
                 ax.set_xlabel("Electron Density (el/cm^3)")
@@ -331,7 +331,7 @@ async def get_dlr_data(f10p7_sfu: float, lat_deg: float, lon_deg: float, time: s
         # Only keep the height <= 1000
         if height <= 1000 and height >= 100:
             density_data["NEDM2020.ALG"]["theight"].append(height)
-            density_data["NEDM2020.ALG"]["edensity"].append(electron_density)
+            density_data["NEDM2020.ALG"]["edensity"].append(electron_density*1e6)
             # frequency = 8.9803 * sqrt(edensity)
             density_data["NEDM2020.ALG"]["frequency"].append(8.9803 * (electron_density ** 0.5))
     return density_data
